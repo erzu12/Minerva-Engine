@@ -1,5 +1,8 @@
 #include "Application.h"
 
+#include "Minerva/Events/AppEvent.h"
+#include "Minerva/Log.h"
+
 namespace Minerva
 {
 
@@ -14,6 +17,10 @@ namespace Minerva
 
 	void Application::Run()
 	{
+		WindowResizeEvent e(1280, 720);
+		MV_INFO(e);
+
+
 		while (true);
 	}
 

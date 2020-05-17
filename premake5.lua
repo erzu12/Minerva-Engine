@@ -26,6 +26,7 @@
 	
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include"
 	}
 	
@@ -57,7 +58,7 @@
 		defines "MV_DIST"
 		optimize "On"
 	
-	roject "Test"
+	project "Test"
 	location "Test"
 	kind "ConsoleApp"
 	language "C++"
