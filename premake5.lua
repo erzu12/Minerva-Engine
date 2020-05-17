@@ -8,15 +8,18 @@
 		"Dist"
 	}
 	
-	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 	
-	project "Minerva"
+project "Minerva"
 	location "Minerva"
 	kind "SharedLib"
 	language "C++"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	pchheader "mvpch.h"
+	pchsource "Minerva/src/mvpch.cpp"
 	
 	files
 	{
@@ -58,7 +61,7 @@
 		defines "MV_DIST"
 		optimize "On"
 	
-	project "Test"
+project "Test"
 	location "Test"
 	kind "ConsoleApp"
 	language "C++"

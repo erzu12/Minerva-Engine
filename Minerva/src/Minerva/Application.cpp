@@ -1,3 +1,4 @@
+#include "mvpch.h"
 #include "Application.h"
 
 #include "Minerva/Events/AppEvent.h"

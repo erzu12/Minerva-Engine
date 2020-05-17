@@ -2,9 +2,6 @@
 
 #include "Minerva/Core.h"
 
-#include <string>
-#include <functional>
-
 namespace Minerva
 {
 	enum class EventType
