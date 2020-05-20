@@ -2,3 +2,6 @@
 	path = Minerva/vendor/spdlog
 	url = https://github.com/gabime/spdlog
 
+[submodule "Minerva/vendor/GLFW"]
+	path = Minerva/vendor/GLFW
+	url = https://github.com/TheCherno/glfw
