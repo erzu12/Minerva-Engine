@@ -9,6 +9,12 @@
 	}
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+-- include diroctories relative to roo folder
+IncludeDir = {}
+IncludeDir["GLFW"] = "Minerva/vendor/GLFW/include"
+
+include "Minerva/vendor/GLFW"
 	
 project "Minerva"
 	location "Minerva"
@@ -30,7 +36,14 @@ project "Minerva"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 	
 	filter "system:windows"
