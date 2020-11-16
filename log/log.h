@@ -1,2 +1,0 @@
-
-void log(char* output);
