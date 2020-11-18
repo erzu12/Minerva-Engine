@@ -9,6 +9,7 @@
 #include <cstring>
 #include <string>
 
+#include "config.h"
 
 
 struct QueueFamilyIndices {
@@ -40,8 +41,16 @@ struct Vertex {
 };
 
 class Vulkan {
-public:
+	public:
 	void Run();
+
+	void initVulkan(GLFWwindow* window);
+
+	void drawFrame();
+
+	void cleanup();
+
+	VkDevice device;
 
 private:
 	GLFWwindow* window;
@@ -51,8 +60,7 @@ private:
 	VkSurfaceKHR surface;
 
 	static VkPhysicalDevice physicalDevice;
-	VkDevice device;
-
+	
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
 
@@ -108,19 +116,9 @@ private:
 
 	static bool framebufferResized;
 
-	void initWindow();
-
-	void initVulkan();
-
 	void mainLoop();
-
-	void cleanup();
-
-	void drawFrame();
 	
 	void createInstance();
-
-	static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
 	void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 

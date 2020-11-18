@@ -1,3 +1,10 @@
+set(ASSETS_PATH ${CMAKE_SOURCE_DIR}/assets)
+message("assets dir: " ${ASSETS_PATH})
+
+configure_file (config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h @ONLY)
+
+message("project dir: " ${CMAKE_CURRENT_SOURCE_DIR})
+
 add_library(vulkan "vulkan.cpp" "vulkan.h")
 
 find_package(Vulkan REQUIRED FATAL_ERROR)
