@@ -36,6 +36,7 @@
 #include <unordered_map>
 
 
+
 const std::string MODEL_PATH = ASSETS_PATH"/models/sphere3.obj";
 //const std::string MODEL_PATH = "models/test.obj";
 const std::string TEXTURE_PATH = ASSETS_PATH"/textures/planeDiff.png";
@@ -131,8 +132,22 @@ VkPhysicalDevice Vulkan::physicalDevice = VK_NULL_HANDLE;
 
 bool Vulkan::framebufferResized = false;
 
+Vulkan& Vulkan::Get() {
+	static Vulkan instance;
+	return instance;
+}
+
+void Vulkan::OnKeyDownEvent(KeyDownEvent* keyDownEvent) {
+	std::cout << "key down event: " << keyDownEvent->key << std::endl;
+}
+void Vulkan::OnKeyUpEvent(KeyUpEvent* keyDownEvent) {
+	std::cout << "key up event: " << keyDownEvent->key << std::endl;
+}
+
 void Vulkan::initVulkan(GLFWwindow* window) {
 	this->window = window;
+	EventBus::Get().subscribe(this, &Vulkan::OnKeyDownEvent);
+	EventBus::Get().subscribe(this, &Vulkan::OnKeyUpEvent);
 
 	createInstance();
 	setupDebugMessenger();

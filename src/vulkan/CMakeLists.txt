@@ -13,6 +13,7 @@ set_property(TARGET vulkan PROPERTY CXX_STANDARD 17)
 
 target_include_directories(vulkan
 	PUBLIC ${Vulkan_INCLUDE_DIRS}
+	PUBLIC ${CMAKE_SOURCE_DIR}/src/core/events
 	PUBLIC ${CMAKE_SOURCE_DIR}/external/stb
 	PUBLIC ${CMAKE_SOURCE_DIR}/external/tinyobjloader
 )

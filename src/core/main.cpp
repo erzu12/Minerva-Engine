@@ -4,25 +4,25 @@
 #include <glm/glm.hpp>
 #include <vulkan.h>
 #include "window/Window.h"
-
+#include <events.h>
 
 int main()
 {	
 	//init
 	Window w;
 	w.InitWindow();
-	Vulkan vulkan;
-	vulkan.initVulkan(w.window);
-	
+
+	Vulkan::Get().initVulkan(w.window);
+
 	//main Loop
 	while (!glfwWindowShouldClose(w.window)) {
 		glfwPollEvents();
-		vulkan.drawFrame();
+		Vulkan::Get().drawFrame();
 	}
-	vkDeviceWaitIdle(vulkan.device);
+	vkDeviceWaitIdle(Vulkan::Get().device);
 
 	//cleanup
-	vulkan.cleanup();
+	Vulkan::Get().cleanup();
 
 	return EXIT_SUCCESS;
 }

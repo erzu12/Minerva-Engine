@@ -10,6 +10,8 @@
 #include <string>
 
 #include "config.h"
+#include "events.h"
+#include "inputEvents.h"
 
 
 struct QueueFamilyIndices {
@@ -42,7 +44,7 @@ struct Vertex {
 
 class Vulkan {
 	public:
-	void Run();
+	static Vulkan& Get();
 
 	void initVulkan(GLFWwindow* window);
 
@@ -53,6 +55,7 @@ class Vulkan {
 	VkDevice device;
 
 private:
+	Vulkan() {}
 	GLFWwindow* window;
 
 	VkInstance instance;
@@ -116,7 +119,8 @@ private:
 
 	static bool framebufferResized;
 
-	void mainLoop();
+	void OnKeyDownEvent(KeyDownEvent* keyEvent);
+	void OnKeyUpEvent(KeyUpEvent* keyEvent);
 	
 	void createInstance();
 
