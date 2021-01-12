@@ -1,0 +1,4 @@
+class Mesh {
+public:
+private:
+};
