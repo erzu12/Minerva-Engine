@@ -1,5 +1,5 @@
 add_subdirectory(core)
 
-add_subdirectory(Log)
+add_subdirectory(log)
 
 add_subdirectory(vulkan)
