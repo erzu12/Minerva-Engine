@@ -1073,7 +1073,7 @@ void Vulkan::updateUniformBuffer(uint32_t currentImage) {
 	//auto currentTime = std::chrono::high_resolution_clock::now();
 	//float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-	auto currentTime = std::chrono::high_resolution_clock::now();
+	auto currentTime = std::chrono::steady_clock::now();
 
 	float deltatime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastrender).count();
 

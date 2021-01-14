@@ -1,2 +1,2 @@
 
-void log(char* output);
+void log(const char* output);

@@ -1,7 +1,7 @@
 #include "minerva.h"
 #include <GLFW/glfw3.h>
-#include <vulkan.h>
-#include "window/Window.h"
+#include "vulkan.h"
+#include "window/window.h"
 
 void MvUpdate() {
 	glfwPollEvents();

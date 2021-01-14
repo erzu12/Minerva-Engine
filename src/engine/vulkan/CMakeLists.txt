@@ -20,5 +20,6 @@ target_include_directories(vulkan
 
 target_link_libraries(vulkan
 	glm
+	glfw
 	${Vulkan_LIBRARIES}
 )

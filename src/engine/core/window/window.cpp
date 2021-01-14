@@ -37,7 +37,6 @@ GLFWwindow* Window::InitWindow() {
 		EventBus::Get().publish(new WindowCloseEvent(window));
 	});
 	
-	
 	return window;
 }
 

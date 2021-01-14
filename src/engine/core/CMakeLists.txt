@@ -12,10 +12,20 @@ add_library("${PROJECT_NAME}"
 	"scene/mesh.h"
 	"init.cpp"
 	"run.cpp"
+	"main.cpp"
 	"${CMAKE_SOURCE_DIR}/include/minerva.h"
 )
 
 target_include_directories("${PROJECT_NAME}"
-	PUBLIC events
+	PUBLIC .
+	PUBLIC ${CMAKE_SOURCE_DIR}/src/engine/log
+	PUBLIC ${CMAKE_SOURCE_DIR}/src/engine/vulkan
+	PUBLIC ${CMAKE_SOURCE_DIR}/external/glfw/inculde
 )
 
+
+target_link_libraries("${PROJECT_NAME}"
+	log
+	vulkan
+	glfw
+)
