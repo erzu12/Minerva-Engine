@@ -3,7 +3,7 @@
 class Scene
 {
 public:
-	Scene Get();
+	static Scene& Get();
 private:
 	Scene() {}
 };

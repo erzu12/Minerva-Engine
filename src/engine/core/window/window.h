@@ -6,6 +6,6 @@ class Window {
 	static bool framebufferResized;
 public:
 	GLFWwindow* InitWindow();
-	GLFWwindow* window;
+	GLFWwindow* GLFWwidow;
 
 };

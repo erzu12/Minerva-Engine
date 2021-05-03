@@ -1,6 +1,6 @@
 #include "scene.h"
 
-Scene Scene::Get() {
+Scene& Scene::Get() {
 	static Scene scene;
 	return scene;
 }

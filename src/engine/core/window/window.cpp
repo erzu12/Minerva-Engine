@@ -13,31 +13,31 @@ GLFWwindow* Window::InitWindow() {
 	
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-	window = glfwCreateWindow(1400, 1000, "Minerva", nullptr, nullptr);
-	glfwSetWindowUserPointer(window, this);
+	GLFWwidow = glfwCreateWindow(1400, 1000, "Minerva", nullptr, nullptr);
+	glfwSetWindowUserPointer(GLFWwidow, this);
 
 	//GLFW event callbaks
-	glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
+	glfwSetFramebufferSizeCallback(GLFWwidow, [](GLFWwindow* window, int width, int height) {
 		auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
 		app->framebufferResized = true;
 	});
 
-	glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
+	glfwSetMouseButtonCallback(GLFWwidow, [](GLFWwindow* window, int button, int action, int mods) {
 
 	});
 	
-	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+	glfwSetKeyCallback(GLFWwidow, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		if(action == GLFW_PRESS)
 			EventBus::Get().publish(new KeyDownEvent(key));
 		if(action == GLFW_RELEASE)
 			EventBus::Get().publish(new KeyUpEvent(key));
 	});
 
-	glfwSetWindowCloseCallback(window, [](GLFWwindow* window) {
+	glfwSetWindowCloseCallback(GLFWwidow, [](GLFWwindow* window) {
 		EventBus::Get().publish(new WindowCloseEvent(window));
 	});
 	
-	return window;
+	return GLFWwidow;
 }
 
 

@@ -1,6 +1,10 @@
 #pragma once
+#include <vector>
+#include "mesh.h"
 
 class Object {
 public:
-private:
+    Object();
+
+    Mesh mesh;
 };

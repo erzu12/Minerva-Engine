@@ -14,6 +14,7 @@ int main()
 {	
 	//init
 	Window w;
+	Log log;
 	w.InitWindow();
 
 	Vulkan::Get().initVulkan(w.window);
@@ -25,6 +26,7 @@ int main()
 		glfwPollEvents();
 		Vulkan::Get().drawFrame();
 		EventBus::Get().publish(new UpdateEvent());
+		log.Fps();
 	}
 	vkDeviceWaitIdle(Vulkan::Get().device);
 
