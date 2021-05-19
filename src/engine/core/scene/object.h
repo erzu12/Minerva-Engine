@@ -1,10 +1,19 @@
 #pragma once
 #include <vector>
-#include "mesh.h"
+#include <iostream>
+#include <fstream>
 
-class Object {
+#include "module.h"
+
+class Object : public Module {
 public:
-    Object();
+    std::vector<Module> modules;
+    std::vector<Object> objects;
 
-    Mesh mesh;
+	Object* AddObject(Object* newObject);
+
+	Module *AddModule(Module *newModule);
+
+	void Write(std::fstream &file);
+	void Read(std::fstream &file);
 };

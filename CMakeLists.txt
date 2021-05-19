@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.16.2)
 project(minerva)
 
 add_subdirectory(src/engine)
+add_subdirectory(src/editor)
 add_subdirectory(testapp)
 
 add_subdirectory(external/glfw)

@@ -1,7 +1,18 @@
 #include "scene.h"
 
-Scene& Scene::Get() {
-	static Scene scene;
-	return scene;
+void Scene::Save(const char* filename) {
+	std::fstream file(filename, std::ios::out);
+	file.seekp(0);
+	Write(file);
+	file.close();
 }
 
+void Scene::Load(const char* filename) {
+	std::fstream file (filename, std::ios::in);
+	if(!file){
+		std::cout << "error: faild to load: " << filename << std::endl;
+		return;
+	}
+	file.seekg (0);
+	Read(file);
+}

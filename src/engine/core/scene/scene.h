@@ -1,9 +1,14 @@
 #pragma once
 
-class Scene
+#include <vector>
+
+#include "object.h"
+
+class Scene : public Object
 {
 public:
-	static Scene& Get();
-private:
 	Scene() {}
+
+	void Save(const char* filename);
+	void Load(const char* filename);
 };
