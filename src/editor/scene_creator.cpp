@@ -2,28 +2,13 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <unordered_map>
 #include <memory>
 
 #include "scene/mesh.h"
-#include "modules.h"
 
-
-#define COMPONENT(modName, mod) 	modules.insert(std::pair<std::string, fptr>(modName, [](Object *co, std::string *name) { \
-										std::shared_ptr<Module> a(new mod()); \
-										a->parent = co; \
-										a->name = *name; \
-										co->AddModule(std::move(a)); \
-									}));
-
-typedef void (*fptr)(Object *co, std::string *name);
 
 void SceneCreator::CreateScene(const char* file) {
-	//std::unordered_map<std::string, fptr> modules;
-	//COMPONENT("mesh", Mesh);
-
-	Modules modules;
 
 	currentObject = &scene;
 	scene.parent = nullptr;
@@ -32,91 +17,106 @@ void SceneCreator::CreateScene(const char* file) {
 
 	std::fstream newfile;
 	newfile.open(file, std::ios::in); 
-	if (newfile.is_open()){
-		std::stringstream strStream;
-		strStream << newfile.rdbuf();
-		std::string tp = strStream.str();
-		std::string moduleType;
-		std::string moduleName;
-		bool args = false;
-		for (auto& i : tp) {
-			if (i == '\n' || i == ' ' || i == '\v' || i == '\t') {}
-			else if (i == '{') {
-				if (moduleType == "object") {
-					Object object;
-					object.name = moduleName;
-					object.parent = currentObject;
-					currentObject = currentObject->AddObject(&object);
-					std::cout << moduleName << "   " << moduleType << std::endl;
-				}
-				else
-				{
-					std::cout << "error: expected ',' found '{'. Only objects support children" << std::endl;
-				}
-				moduleName.clear();
-				moduleType.clear();
-			}
-			else if(i == '}') {
-				if (moduleType == "object") {
-					Object object;
-					object.name = moduleName;
-					object.parent = currentObject;
-					currentObject->AddObject(&object);
-					std::cout << moduleName << "   " << moduleType << std::endl;
-				}
-				else {
-					auto a = modules.modules.find(moduleType);
-					if (a == modules.modules.end()) {
-						std::cout << "module not found: " << moduleType << std::endl;
-					}
-					auto func = a->second;
-					func(currentObject, moduleName, std::string());
-				}
-				currentObject = (Object*)currentObject->parent;
-				moduleName.clear();
-				moduleType.clear();
-			}
-			else if (i == '(') {
-				args = true;
-			}
-			else if (i == ')') {
-				args = false;
-			}
-			else if (i == ',') {
-				if (moduleType == "object") {
-					Object object;
-					object.name = moduleName;
-					object.parent = currentObject;
-					currentObject->AddObject(&object);
-				}
-				else {
-					auto a = modules.modules.find(moduleType);
-					if (a == modules.modules.end()) {
-						std::cout << "module not found: " << moduleType << std::endl;
-					}
-					auto func = a->second;
-					func(currentObject, moduleName, std::string());
-				}
-				std::cout << moduleName << "   " << moduleType << std::endl;
-				moduleName.clear();
-				moduleType.clear();
-			}
-			else {
-				if (args) {
-					moduleName += i;
-				}
-				else {
-					moduleType += i;
-				}
-			}
-		}
-		newfile.close();
-	}
-	else
-	{
+	if (!newfile.is_open()){
 		std::cout << "error failed to open file: " << file << std::endl;
+		return;
+	}
+
+	strStream << newfile.rdbuf();
+	tp = strStream.str();
+
+	isArgs = false;
+	isLeft = true;
+
+	for (auto& i : tp) {
+		if (i == '\n' || i == ' ' || i == '\v' || i == '\t') {
+			continue;
+		}
+		switch (i)
+		{
+			case '{' :
+				AddModule(true);
+				break;
+			case '}' :
+				currentObject = (Object*)currentObject->parent;
+				break;
+			case '(' :
+				isLeft = false;
+				break;
+			case ')' :
+				isLeft = true;
+				break;
+			case ',' :
+				args.push_back(std::pair < std::string, std::string >(argType, argValue));
+				argType.clear();
+				argValue.clear();
+				isLeft = false;
+				break;
+			case ':' :
+				isArgs = true;
+
+				break;
+			case ';' :
+				AddModule(false);
+				break;
+			case '=' :
+				isLeft = false;
+				break;
+			default:
+				if (isArgs) {
+					if (isLeft) {
+						argType += i;
+					}
+					else {
+						argValue += i;
+					}
+				}
+				else {
+					if (isLeft) {
+						moduleType += i;
+					}
+					else
+					{
+						moduleName += i;
+					}
+				}
+				break;
+		}
+		
+	newfile.close();
 	}
 
 	scene.Save("test.scene");
+}
+
+void SceneCreator::AddModule(bool isParent) {
+	isArgs = false;
+	args.push_back(std::pair < std::string, std::string >(argType, argValue));
+	if (moduleType == "object") {
+		Object object;
+		object.name = moduleName;
+		object.parent = currentObject;
+		if (isParent) {
+			currentObject = currentObject->AddObject(&object);
+		}
+		else
+		{
+			currentObject->AddObject(&object);
+		}
+	}
+	else {
+		auto a = modules.modules.find(moduleType);
+		if (a == modules.modules.end()) {
+			std::cout << "module not found: " << moduleType << std::endl;
+		}
+		auto func = a->second;
+		func(currentObject, moduleName, args);
+	}
+	std::cout << moduleName << "   " << moduleType << std::endl;
+	moduleName.clear();
+	moduleType.clear();
+	argType.clear();
+	argValue.clear();
+	args.clear();
 }
 

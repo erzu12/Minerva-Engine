@@ -21,8 +21,6 @@ add_library("${PROJECT_NAME}"
 	"scene/module.h"
 	"scene/mesh.cpp"
 	"scene/mesh.h"
-	"scene/sceneloader.cpp"
-	"scene/sceneloader.h"
 	"scene/modules.h"
 )
 
