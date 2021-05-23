@@ -7,13 +7,13 @@
 
 class Object : public Module {
 public:
-    std::vector<Module> modules;
+	std::vector < std::shared_ptr<Module>> modules;
     std::vector<Object> objects;
 
 	Object* AddObject(Object* newObject);
 
-	Module *AddModule(Module *newModule);
+	void AddModule(std::shared_ptr<Module> newModule);
 
-	void Write(std::fstream &file);
-	void Read(std::fstream &file);
+	void Write(std::ofstream &file) override;
+	void Read(std::ifstream &file) override;
 };

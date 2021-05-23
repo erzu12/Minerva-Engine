@@ -2,5 +2,5 @@
 
 class SceneSaver {
 public:
-    void SaveScene(Scene scene);
+	void SaveScene(Scene scene);
 };

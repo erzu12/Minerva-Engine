@@ -1,7 +1,7 @@
 #include "window.h"
-#include "events.h"
-#include "inputEvents.h"
-#include "appEvents.h"
+#include "events/events.h"
+#include "events/inputEvents.h"
+#include "events/appEvents.h"
 #include <iostream>
 
 bool Window::framebufferResized = false;

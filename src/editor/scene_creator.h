@@ -1,3 +1,4 @@
+#pragma once
 #include "scene/scene.h"
 #include "scene/object.h"
 

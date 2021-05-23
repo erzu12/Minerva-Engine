@@ -4,8 +4,10 @@
 #include <vector>
 #include <array>
 
+#include "config.h"
+#include "module.h"
 
-struct Vertex2 {
+struct Vertex {
 	glm::vec3 pos;
 	glm::vec3 color;
 	glm::vec2 texCoord;
@@ -15,13 +17,19 @@ struct Vertex2 {
 
 	static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions();
 
-	bool operator==(const Vertex2& other) const {
+	bool operator==(const Vertex& other) const {
 		return pos == other.pos && color == other.color && texCoord == other.texCoord;
 	}
 };
 
-struct Mesh {
+
+class Mesh : public Module {
 public:
-    std::vector<Vertex2> vertices;
+	int moduleIndex = 0;
+
+    std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
+
+	void Write(std::ofstream& file) override;
+	void Read(std::ifstream& file) override;
 };

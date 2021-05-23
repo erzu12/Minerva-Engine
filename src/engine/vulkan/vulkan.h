@@ -11,9 +11,11 @@
 #include <chrono>
 
 #include "config.h"
-#include "events.h"
-#include "inputEvents.h"
+#include "events/events.h"
+#include "events/inputEvents.h"
 
+#include "scene/mesh.h"
+#include "scene/scene.h"
 
 struct QueueFamilyIndices {
 	std::optional<uint32_t> graphicsFamily;
@@ -28,25 +30,25 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
-struct Vertex {
-	glm::vec3 pos;
-	glm::vec3 color;
-	glm::vec2 texCoord;
-	glm::vec3 normal;
-
-	static VkVertexInputBindingDescription getBindingDescription();
-	static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions();
-
-	bool operator==(const Vertex& other) const {
-		return pos == other.pos && color == other.color && texCoord == other.texCoord;
-	}
-};
+//struct Vertex {
+//	glm::vec3 pos;
+//	glm::vec3 color;
+//	glm::vec2 texCoord;
+//	glm::vec3 normal;
+//
+//	static VkVertexInputBindingDescription getBindingDescription();
+//	static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions();
+//
+//	bool operator==(const Vertex& other) const {
+//		return pos == other.pos && color == other.color && texCoord == other.texCoord;
+//	}
+//};
 
 class Vulkan {
 	public:
-	static Vulkan& Get();
+	Vulkan();
 
-	void initVulkan(GLFWwindow* window);
+	void initVulkan(GLFWwindow* window, Scene *scene);
 
 	void drawFrame();
 
@@ -55,8 +57,9 @@ class Vulkan {
 	VkDevice device;
 
 private:
-	Vulkan();
-	GLFWwindow* window;
+	GLFWwindow *window;
+
+	Scene* scene;
 
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT debugMessenger;
@@ -84,8 +87,8 @@ private:
 
 	std::vector<VkDescriptorSet> descriptorSets;
 
-	std::vector<Vertex> vertices;
-	std::vector<uint32_t> indices;
+	std::vector<Vertex> *vertices;
+	std::vector<uint32_t> *indices;
 	VkBuffer vertexBuffer;
 	VkDeviceMemory vertexBufferMemory;
 	VkBuffer indexBuffer;

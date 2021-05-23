@@ -4,14 +4,26 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
+#include <memory>
+
+#include "scene/mesh.h"
+#include "modules.h"
 
 
-#define COMPONENT(name, mod) 	modules.insert(std::pair<std::string, fptr>(name, [](Object *oc) {mod a; a.parent = oc; return oc->AddModule(&a);}));
+#define COMPONENT(modName, mod) 	modules.insert(std::pair<std::string, fptr>(modName, [](Object *co, std::string *name) { \
+										std::shared_ptr<Module> a(new mod()); \
+										a->parent = co; \
+										a->name = *name; \
+										co->AddModule(std::move(a)); \
+									}));
 
-typedef Module *(*fptr)(Object *co);
+typedef void (*fptr)(Object *co, std::string *name);
 
 void SceneCreator::CreateScene(const char* file) {
-	std::unordered_map<std::string, fptr> modules;
+	//std::unordered_map<std::string, fptr> modules;
+	//COMPONENT("mesh", Mesh);
+
+	Modules modules;
 
 	currentObject = &scene;
 	scene.parent = nullptr;
@@ -52,6 +64,14 @@ void SceneCreator::CreateScene(const char* file) {
 					currentObject->AddObject(&object);
 					std::cout << moduleName << "   " << moduleType << std::endl;
 				}
+				else {
+					auto a = modules.modules.find(moduleType);
+					if (a == modules.modules.end()) {
+						std::cout << "module not found: " << moduleType << std::endl;
+					}
+					auto func = a->second;
+					func(currentObject, moduleName, std::string());
+				}
 				currentObject = (Object*)currentObject->parent;
 				moduleName.clear();
 				moduleType.clear();
@@ -68,6 +88,14 @@ void SceneCreator::CreateScene(const char* file) {
 					object.name = moduleName;
 					object.parent = currentObject;
 					currentObject->AddObject(&object);
+				}
+				else {
+					auto a = modules.modules.find(moduleType);
+					if (a == modules.modules.end()) {
+						std::cout << "module not found: " << moduleType << std::endl;
+					}
+					auto func = a->second;
+					func(currentObject, moduleName, std::string());
 				}
 				std::cout << moduleName << "   " << moduleType << std::endl;
 				moduleName.clear();

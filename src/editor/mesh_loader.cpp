@@ -1,4 +1,4 @@
-#include "meshloader.h"
+#include "mesh_loader.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
@@ -8,20 +8,17 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/hash.hpp>
 
+#include <iostream>
+
 namespace std {
-	template<> struct hash<Vertex2> {
-		size_t operator()(Vertex2 const& vertex) const {
+	template<> struct hash<Vertex> {
+		size_t operator()(Vertex const& vertex) const {
 			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
 		}
 	};
 }
 
-Meshloader& Meshloader::Get(){
-	static Meshloader meshloader;
-	return meshloader;
-}
-
-void Meshloader::LoadMesh(std::string path, Mesh* mesh){
+void Meshloader::LoadMesh(std::string path, std::shared_ptr<Mesh> mesh) {
 
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
@@ -32,11 +29,11 @@ void Meshloader::LoadMesh(std::string path, Mesh* mesh){
 		throw std::runtime_error(warn + err);
 	}
 
-	std::unordered_map<Vertex2, uint32_t> uniqueVertices{};
+	std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
 	for (const auto& shape : shapes) {
 		for (const auto& index : shape.mesh.indices) {
-			Vertex2 vertex{};
+			Vertex vertex{};
 
 			vertex.pos = {
 			attrib.vertices[3 * index.vertex_index + 0],

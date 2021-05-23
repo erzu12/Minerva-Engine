@@ -8,6 +8,10 @@ add_executable("${PROJECT_NAME}"
 	"scene_creator.cpp"
 	"scene_saver.h"
 	"scene_saver.cpp"
+	"mesh_loader.h"
+	"mesh_loader.cpp"
+	"modules.h"
+	"modules.cpp"
 )
 
 set_property(TARGET "${PROJECT_NAME}" PROPERTY CXX_STANDARD 17)

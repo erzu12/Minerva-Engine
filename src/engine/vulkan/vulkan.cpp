@@ -36,7 +36,6 @@
 #include <unordered_map>
 
 
-
 const std::string MODEL_PATH = ASSETS_PATH"/models/plane.obj";
 //const std::string MODEL_PATH = "models/test.obj";
 const std::string TEXTURE_PATH = ASSETS_PATH"/textures/planeDiff.png";
@@ -79,48 +78,48 @@ bool QueueFamilyIndices::isComplete() {
 }
 
 
-VkVertexInputBindingDescription Vertex::getBindingDescription() {
-	VkVertexInputBindingDescription bindingDescription{};
-	bindingDescription.binding = 0;
-	bindingDescription.stride = sizeof(Vertex);
-	bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+//VkVertexInputBindingDescription Vertex::getBindingDescription() {
+//	VkVertexInputBindingDescription bindingDescription{};
+//	bindingDescription.binding = 0;
+//	bindingDescription.stride = sizeof(Vertex);
+//	bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+//
+//	return bindingDescription;
+//}
 
-	return bindingDescription;
-}
+//std::array<VkVertexInputAttributeDescription, 4> Vertex::getAttributeDescriptions() {
+//	std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
+//
+//	attributeDescriptions[0].binding = 0;
+//	attributeDescriptions[0].location = 0;
+//	attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+//	attributeDescriptions[0].offset = offsetof(Vertex, pos);
+//
+//	attributeDescriptions[1].binding = 0;
+//	attributeDescriptions[1].location = 1;
+//	attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+//	attributeDescriptions[1].offset = offsetof(Vertex, color);
+//
+//	attributeDescriptions[2].binding = 0;
+//	attributeDescriptions[2].location = 2;
+//	attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
+//	attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
+//
+//	attributeDescriptions[3].binding = 0;
+//	attributeDescriptions[3].location = 3;
+//	attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
+//	attributeDescriptions[3].offset = offsetof(Vertex, normal);
+//
+//	return attributeDescriptions;
+//}
 
-std::array<VkVertexInputAttributeDescription, 4> Vertex::getAttributeDescriptions() {
-	std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
-
-	attributeDescriptions[0].binding = 0;
-	attributeDescriptions[0].location = 0;
-	attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-	attributeDescriptions[0].offset = offsetof(Vertex, pos);
-
-	attributeDescriptions[1].binding = 0;
-	attributeDescriptions[1].location = 1;
-	attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-	attributeDescriptions[1].offset = offsetof(Vertex, color);
-
-	attributeDescriptions[2].binding = 0;
-	attributeDescriptions[2].location = 2;
-	attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
-	attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
-
-	attributeDescriptions[3].binding = 0;
-	attributeDescriptions[3].location = 3;
-	attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
-	attributeDescriptions[3].offset = offsetof(Vertex, normal);
-
-	return attributeDescriptions;
-}
-
-namespace std {
-	template<> struct hash<Vertex> {
-		size_t operator()(Vertex const& vertex) const {
-			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
-		}
-	};
-}
+//namespace std {
+//	template<> struct hash<Vertex> {
+//		size_t operator()(Vertex const& vertex) const {
+//			return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
+//		}
+//	};
+//}
 
 struct UniformBufferObject {
 	glm::mat4 model;
@@ -131,18 +130,13 @@ struct UniformBufferObject {
 VkPhysicalDevice Vulkan::physicalDevice = VK_NULL_HANDLE;
 
 Vulkan::Vulkan() {
-	bool turnLeft = false;
-	bool turnRight = false;
-	float rotation = 0;
+	turnLeft = false;
+	turnRight = false;
+	rotation = 0;
 }
 
 bool Vulkan::framebufferResized = false;
 
-
-Vulkan& Vulkan::Get() {
-	static Vulkan instance;
-	return instance;
-}
 
 void Vulkan::OnKeyDownEvent(KeyDownEvent* keyDownEvent) {
 	std::cout << "key down event: " << keyDownEvent->key << std::endl;
@@ -159,8 +153,10 @@ void Vulkan::OnKeyUpEvent(KeyUpEvent* keyDownEvent) {
 		turnRight = false;
 }
 
-void Vulkan::initVulkan(GLFWwindow* window) {
+void Vulkan::initVulkan(GLFWwindow* window, Scene *scene) {
 	this->window = window;
+	indices = &std::dynamic_pointer_cast<Mesh>(scene->objects[0].modules[0])->indices;
+	vertices = &std::dynamic_pointer_cast<Mesh>(scene->objects[0].modules[0])->vertices;
 	EventBus::Get().subscribe(this, &Vulkan::OnKeyDownEvent);
 	EventBus::Get().subscribe(this, &Vulkan::OnKeyUpEvent);
 
@@ -1017,7 +1013,7 @@ void Vulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryP
 }
 
 void Vulkan::createIndexBuffer() {
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+	VkDeviceSize bufferSize = sizeof(indices->front()) * indices->size();
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
@@ -1025,7 +1021,7 @@ void Vulkan::createIndexBuffer() {
 
 	void* data;
 	vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, indices.data(), (size_t)bufferSize);
+	memcpy(data, indices->data(), (size_t)bufferSize);
 	vkUnmapMemory(device, stagingBufferMemory);
 
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
@@ -1037,7 +1033,7 @@ void Vulkan::createIndexBuffer() {
 }
 
 void Vulkan::createVertexBuffer() {
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+	VkDeviceSize bufferSize = sizeof(vertices->front()) * vertices->size();
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
@@ -1045,7 +1041,7 @@ void Vulkan::createVertexBuffer() {
 
 	void* data;
 	vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)bufferSize);
+	memcpy(data, vertices->data(), (size_t)bufferSize);
 	vkUnmapMemory(device, stagingBufferMemory);
 
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
@@ -1227,7 +1223,7 @@ void Vulkan::createCommandBuffers() {
 
 		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
 
-		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t>(indices->size()), 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(commandBuffers[i]);
 
@@ -1622,49 +1618,53 @@ VkFormat Vulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, Vk
 }
 
 void Vulkan::loadModel() {
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string warn, err;
-
-	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) {
-		throw std::runtime_error(warn + err);
-	}
-
-	std::unordered_map<Vertex, uint32_t> uniqueVertices{};
-
-	for (const auto& shape : shapes) {
-		for (const auto& index : shape.mesh.indices) {
-			Vertex vertex{};
-
-			vertex.pos = {
-			attrib.vertices[3 * index.vertex_index + 0],
-			attrib.vertices[3 * index.vertex_index + 1],
-			attrib.vertices[3 * index.vertex_index + 2]
-			};
-
-			vertex.normal = {
-			attrib.normals[3 * index.normal_index + 0],
-			attrib.normals[3 * index.normal_index + 1],
-			attrib.normals[3 * index.normal_index + 2]
-			};
-
-			vertex.texCoord = {
-				attrib.texcoords[2 * index.texcoord_index + 0],
-				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
-			};
-
-			vertex.color = { 1.0f, 1.0f, 1.0f };
-
-			if (uniqueVertices.count(vertex) == 0) {
-				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-				vertices.push_back(vertex);
-			}
-
-			indices.push_back(uniqueVertices[vertex]);
-		}
-	}
+	
 }
+
+//void Vulkan::loadModel() {
+//	tinyobj::attrib_t attrib;
+//	std::vector<tinyobj::shape_t> shapes;
+//	std::vector<tinyobj::material_t> materials;
+//	std::string warn, err;
+//
+//	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) {
+//		throw std::runtime_error(warn + err);
+//	}
+//
+//	std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+//
+//	for (const auto& shape : shapes) {
+//		for (const auto& index : shape.mesh.indices) {
+//			Vertex vertex{};
+//
+//			vertex.pos = {
+//			attrib.vertices[3 * index.vertex_index + 0],
+//			attrib.vertices[3 * index.vertex_index + 1],
+//			attrib.vertices[3 * index.vertex_index + 2]
+//			};
+//
+//			vertex.normal = {
+//			attrib.normals[3 * index.normal_index + 0],
+//			attrib.normals[3 * index.normal_index + 1],
+//			attrib.normals[3 * index.normal_index + 2]
+//			};
+//
+//			vertex.texCoord = {
+//				attrib.texcoords[2 * index.texcoord_index + 0],
+//				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+//			};
+//
+//			vertex.color = { 1.0f, 1.0f, 1.0f };
+//
+//			if (uniqueVertices.count(vertex) == 0) {
+//				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+//				vertices.push_back(vertex);
+//			}
+//
+//			indices.push_back(uniqueVertices[vertex]);
+//		}
+//	}
+//}
 
 VkSampleCountFlagBits Vulkan::getMaxUsableSampleCount() {
 	VkPhysicalDeviceProperties physicalDeviceProperties;

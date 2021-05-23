@@ -1,3 +1,10 @@
+set(ASSETS_PATH ${CMAKE_SOURCE_DIR}/assets)
+message("assets dir: " ${ASSETS_PATH})
+
+message("project dir: " ${CMAKE_CURRENT_SOURCE_DIR})
+
+configure_file (config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h @ONLY)
+
 add_library("${PROJECT_NAME}"
 	"minerva.cpp"
 	"minerva.h"
@@ -14,10 +21,9 @@ add_library("${PROJECT_NAME}"
 	"scene/module.h"
 	"scene/mesh.cpp"
 	"scene/mesh.h"
-	"scene/meshloader.cpp"
-	"scene/meshloader.h"
 	"scene/sceneloader.cpp"
 	"scene/sceneloader.h"
+	"scene/modules.h"
 )
 
 target_include_directories("${PROJECT_NAME}"
