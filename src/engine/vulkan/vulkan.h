@@ -30,20 +30,6 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
-//struct Vertex {
-//	glm::vec3 pos;
-//	glm::vec3 color;
-//	glm::vec2 texCoord;
-//	glm::vec3 normal;
-//
-//	static VkVertexInputBindingDescription getBindingDescription();
-//	static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions();
-//
-//	bool operator==(const Vertex& other) const {
-//		return pos == other.pos && color == other.color && texCoord == other.texCoord;
-//	}
-//};
-
 class Vulkan {
 	public:
 	Vulkan();
@@ -53,6 +39,7 @@ class Vulkan {
 	void drawFrame();
 
 	void cleanup();
+
 
 	VkDevice device;
 
@@ -87,12 +74,12 @@ private:
 
 	std::vector<VkDescriptorSet> descriptorSets;
 
-	std::vector<Vertex> *vertices;
-	std::vector<uint32_t> *indices;
-	VkBuffer vertexBuffer;
-	VkDeviceMemory vertexBufferMemory;
-	VkBuffer indexBuffer;
-	VkDeviceMemory indexBufferMemory;
+	std::vector<std::vector<Vertex>*> vertices;
+	std::vector<std::vector<uint32_t>*> indices;
+	std::vector<VkBuffer> vertexBuffers;
+	std::vector<VkDeviceMemory> vertexBufferMemorys;
+	std::vector<VkBuffer> indexBuffers;
+	std::vector<VkDeviceMemory> indexBufferMemorys;
 
 	std::vector<VkBuffer> uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;
@@ -120,16 +107,17 @@ private:
 	std::vector<VkFence> imagesInFlight;
 	size_t currentFrame = 0;
 
-	bool turnLeft;
-	bool turnRight;
+	std::vector<glm::vec3> pos;
 
-	float rotation;
+	int meshCount;
+
 	std::chrono::steady_clock::time_point lastrender;
 
 	static bool framebufferResized;
 
-	void OnKeyDownEvent(KeyDownEvent* keyEvent);
-	void OnKeyUpEvent(KeyUpEvent* keyEvent);
+	void LoadGeometry(Object *co);
+
+	void LoadMeshes();
 	
 	void createInstance();
 
@@ -185,7 +173,7 @@ private:
 
 	void createUniformBuffers();
 
-	void updateUniformBuffer(uint32_t currentImage);
+	void updateUniformBuffers(uint32_t currentImage);
 
 	void createVertexBuffer();
 

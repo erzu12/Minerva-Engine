@@ -12,6 +12,8 @@ public:
 
 	Object* AddObject(Object* newObject);
 
+	int GetModuleIndex() override;
+
 	void AddModule(std::shared_ptr<Module> newModule);
 
 	void Write(std::ofstream &file) override;

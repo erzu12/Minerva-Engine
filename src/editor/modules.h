@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <functional>
 #include <memory>
+//#include <sstream>
 
 #include "config.h"
 #include "scene/mesh.h"
@@ -22,7 +23,10 @@ public:
 				if (a == meshArgs.end()) {
 					std::cout << "error: no such argument for Mesh: " << arg.first << std::endl;
 				}
-				a->second(mesh, arg.second);
+				else
+				{
+					a->second(mesh, arg.second);
+				}
 			}
 			co->AddModule(std::move(mesh));
 		}}
@@ -32,10 +36,14 @@ public:
 		{"path",[](std::shared_ptr<Mesh> mod, std::string& arg) {
 			Meshloader ml;
 			ml.LoadMesh(ASSETS_PATH + arg, mod);
+		}},
+		{"position",[](std::shared_ptr<Mesh> mod, std::string& arg) {
+			int x, y, z;
+			std::stringstream ss(arg);
+			ss >> x;
+			ss >> y;
+			ss >> z;
+			mod->pos = {x, y, z};
 		}}
 	};
-
-	void ParseArgs() {
-		
-	}
 };

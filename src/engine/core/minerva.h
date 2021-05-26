@@ -2,7 +2,6 @@
 #include "window/window.h"
 #include "log.h"
 #include "vulkan.h"
-#include "scene/sceneloader.h"
 #include "scene/scene.h"
 
 class Minerva {

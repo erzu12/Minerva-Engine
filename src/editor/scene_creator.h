@@ -18,6 +18,7 @@ private:
 	std::vector<std::pair<std::string, std::string> > args;
 	bool isLeft;
 	bool isArgs;
+	bool isSubArgs;
 public:
 	void CreateScene(const char* file);
 	void AddModule(bool isParent);

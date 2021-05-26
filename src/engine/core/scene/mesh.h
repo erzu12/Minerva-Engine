@@ -24,11 +24,15 @@ struct Vertex {
 
 
 class Mesh : public Module {
-public:
+private:
 	int moduleIndex = 0;
+public:
+	glm::vec3 pos;
 
     std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
+
+	int GetModuleIndex() override;
 
 	void Write(std::ofstream& file) override;
 	void Read(std::ifstream& file) override;

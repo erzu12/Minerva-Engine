@@ -38,6 +38,10 @@ std::array<VkVertexInputAttributeDescription, 4> Vertex::getAttributeDescription
 	return attributeDescriptions;
 }
 
+int Mesh:: GetModuleIndex() {
+	return moduleIndex;
+}
+
 void Mesh::Write(std::ofstream& file) {
 	int namelength = name.length();
 	int vertlength = vertices.size();
@@ -47,6 +51,8 @@ void Mesh::Write(std::ofstream& file) {
 
 	file.write((char*)&namelength, sizeof(int));
 	file.write(name.data(), name.length() * sizeof(char));
+
+	file.write((char*)&pos, sizeof(glm::vec3));
 
 	file.write((char*)&vertlength, sizeof(int));
 	file.write((char*)vertices.data(), vertlength * sizeof(Vertex));
@@ -65,11 +71,12 @@ void Mesh::Read(std::ifstream& file) {
 	name.resize(namelength);
 	file.read(name.data(), namelength * sizeof(char));
 
+	file.read((char*)&pos, sizeof(glm::vec3));
+
 	file.read((char*)&vertlength, sizeof(int));
 	vertices.resize(vertlength);
 	file.read((char*)vertices.data(), vertlength * sizeof(Vertex));
 
-	std::cout << file.tellg() << std::endl;
 	file.read((char*)&indlength, sizeof(int));
 	indices.resize(indlength);
 	file.read((char*)indices.data(), indlength * sizeof(uint32_t));

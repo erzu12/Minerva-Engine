@@ -6,6 +6,10 @@ Object *Object::AddObject(Object *newObject) {
 	return &objects.back();
 }
 
+int Object:: GetModuleIndex() {
+	return -1;
+}
+
 void Object::AddModule(std::shared_ptr<Module> newModule) {
 	modules.push_back(std::move(newModule));
 }
